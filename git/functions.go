@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/charmbracelet/huh"
 )
@@ -47,8 +48,15 @@ func Commit(){
     fmt.Println(string(commitOut))
 }
 
-func Fetch() {
+func Fetch(showOutput bool) {
     fetchCmd := exec.Command("git","fetch", "-a")
+    if showOutput {
+      fetchErr := fetchCmd.Run()
+      if fetchErr != nil {
+        fmt.Println("Error", fetchErr)
+        os.Exit(1)
+      }
+    }
     out, fetchErr := fetchCmd.Output()
     if fetchErr != nil {
       fmt.Println("Error", fetchErr)
@@ -69,4 +77,19 @@ func Pull(master bool) {
       os.Exit(1)
     }
     fmt.Println(string(out))
+}
+
+func GetAllBranches(){
+    Fetch(false)
+    allBranchesCmd := exec.Command("git","branch", "--remote")
+    allBranches, err := allBranchesCmd.Output()
+    if err != nil {
+      fmt.Println("Error", err)
+      os.Exit(1)
+    }
+    s := strings.Split(strings.TrimSpace(string(allBranches)), "\n\n")
+
+    for _, branch := range s {
+      fmt.Println(branch)
+    }
 }

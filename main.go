@@ -18,12 +18,12 @@ type Git struct {
 // Git option enums
 const (
   Fetch GitOption = iota +1
-  Merge
   Pull
   CherryPick
   Commit
   Status
   PullMaster
+  GetAllBranches
 )
 
 // Convert git option enum in to strings
@@ -31,8 +31,6 @@ func (git GitOption) String() string {
   switch git {
   case Fetch:
     return "Fetch"
-  case Merge:
-    return "Merge"
   case Pull:
     return "Pull"
   case CherryPick:
@@ -43,6 +41,8 @@ func (git GitOption) String() string {
     return "Status"
   case PullMaster:
     return "Pull Master"
+  case GetAllBranches:
+    return "Get All Branches"
   default:
     return ""
   }
@@ -66,10 +66,10 @@ func main(){
           huh.NewOption("Fetch Latest Branches", Fetch).Selected(true),
 					huh.NewOption("Pull Latest of Branch", Pull),
 					huh.NewOption("Merge Latest of Master", PullMaster),
-					huh.NewOption("Merge", Merge),
 					huh.NewOption("Cherry Pick", CherryPick),
 					huh.NewOption("Commit", Commit),
 					huh.NewOption("Changed Files", Status),
+					huh.NewOption("Get All Branches", GetAllBranches),
         ).
         Value(&git.GitOption),
     ),
@@ -88,11 +88,14 @@ func main(){
   case Commit:
     GitFunctions.Commit()
   case Fetch:
-    GitFunctions.Fetch()
+    GitFunctions.Fetch(true)
   case Pull:
     GitFunctions.Pull(false)
   case PullMaster:
     GitFunctions.Pull(true)
+  case GetAllBranches:
+    GitFunctions.Fetch(false)
+    GitFunctions.GetAllBranches()
 
   }
 }
