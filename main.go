@@ -6,6 +6,7 @@ import (
 	"os/exec"
 
 	"github.com/charmbracelet/huh"
+  GitFunctions "github.com/developerwakeling/go-git/git"
 )
 
 type GitOption int
@@ -80,12 +81,7 @@ func main(){
 
   switch git.GitOption {
   case Status:
-    cmd := exec.Command("git","status")
-    out, err := cmd.Output()
-    if err != nil {
-      fmt.Println("Error", err)
-    }
-    fmt.Println(string(out))
+    GitFunctions.Status()
   case Commit:
     //Start an input
     err := huh.NewInput().
