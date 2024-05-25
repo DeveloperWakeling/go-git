@@ -88,12 +88,10 @@ func main(){
     fmt.Println(string(out))
   case Commit:
     //Start an input
-    commitForm := huh.NewInput().
+    err := huh.NewInput().
     Title("Commit Message").
     Placeholder("Enter message here").
-    Value(&git.CommitMessage)
-
-    err := commitForm.Run()
+    Value(&git.CommitMessage).Run()
 
     if err != nil {
       fmt.Println("Error", err)
@@ -107,8 +105,7 @@ func main(){
       fmt.Println("Error", addErr)
       os.Exit(1)
     }
-      fmt.Println("Commit Message", git.CommitMessage)
-    commitCmd := exec.Command("git", "commit", "-m", "'"+git.CommitMessage+"'")
+    commitCmd := exec.Command("git", "commit", "-m", git.CommitMessage)
     commitOut, commitError := commitCmd.Output()
 
     if commitError != nil {
