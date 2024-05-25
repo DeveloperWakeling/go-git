@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"os/exec"
 
 	"github.com/charmbracelet/huh"
   GitFunctions "github.com/developerwakeling/go-git/git"
@@ -24,6 +23,7 @@ const (
   CherryPick
   Commit
   Status
+  PullMaster
 )
 
 // Convert git option enum in to strings
@@ -41,6 +41,8 @@ func (git GitOption) String() string {
     return "Commit"
   case Status:
     return "Status"
+  case PullMaster:
+    return "Pull Master"
   default:
     return ""
   }
@@ -63,6 +65,7 @@ func main(){
         Options(
           huh.NewOption("Fetch Latest Branches", Fetch).Selected(true),
 					huh.NewOption("Pull Latest of Branch", Pull),
+					huh.NewOption("Merge Latest of Master", PullMaster),
 					huh.NewOption("Merge", Merge),
 					huh.NewOption("Cherry Pick", CherryPick),
 					huh.NewOption("Commit", Commit),
@@ -83,33 +86,13 @@ func main(){
   case Status:
     GitFunctions.Status()
   case Commit:
-    //Start an input
-    err := huh.NewInput().
-    Title("Commit Message").
-    Placeholder("Enter message here").
-    Value(&git.CommitMessage).Run()
-
-    if err != nil {
-      fmt.Println("Error", err)
-      os.Exit(1)
-    }
-
-
-    addCmd := exec.Command("git","add", ".")
-    _, addErr := addCmd.Output()
-    if addErr != nil {
-      fmt.Println("Error", addErr)
-      os.Exit(1)
-    }
-    commitCmd := exec.Command("git", "commit", "-m", git.CommitMessage)
-    commitOut, commitError := commitCmd.Output()
-
-    if commitError != nil {
-      fmt.Println("commit Error", commitError)
-      os.Exit(1)
-    }
-    fmt.Println(string(commitOut))
-
+    GitFunctions.Commit()
+  case Fetch:
+    GitFunctions.Fetch()
+  case Pull:
+    GitFunctions.Pull(false)
+  case PullMaster:
+    GitFunctions.Pull(true)
 
   }
 }

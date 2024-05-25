@@ -46,3 +46,27 @@ func Commit(){
     }
     fmt.Println(string(commitOut))
 }
+
+func Fetch() {
+    fetchCmd := exec.Command("git","fetch", "-a")
+    out, fetchErr := fetchCmd.Output()
+    if fetchErr != nil {
+      fmt.Println("Error", fetchErr)
+      os.Exit(1)
+    }
+    fmt.Println(string(out))
+}
+
+
+func Pull(master bool) {
+    pullCmd := exec.Command("git","pull")
+    if master {
+      pullCmd = exec.Command("git","pull", "origin", "master")
+    }
+    out, pullErr := pullCmd.Output()
+    if pullErr != nil {
+      fmt.Println("Error", pullErr)
+      os.Exit(1)
+    }
+    fmt.Println(string(out))
+}
